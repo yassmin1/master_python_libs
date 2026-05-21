@@ -1,6 +1,6 @@
-# Pandas Pathway
+# Python Data Pathways
 
-An interactive Python app for learning Pandas from beginner to advanced level.
+An interactive Python app for learning Pandas and NumPy from beginner to advanced level.
 
 ## Run
 
@@ -20,11 +20,14 @@ python -m streamlit run streamlit_app.py
 
 ## What is included
 
-- Pandas mastery roadmap
+- Track selector for Pandas or NumPy
+- Pandas and NumPy mastery roadmaps
 - Concept library explaining the mental model behind the syntax
 - Beginner, intermediate, and advanced Pandas lessons
+- Beginner, intermediate, and advanced NumPy lessons
 - Cheat sheets grouped by task
 - Real Pandas DataFrame playground
+- Interactive NumPy array playground
 - Filters, sorting, groupby summaries, and charts
 - Common Pandas mistakes with better patterns
 - Mastery drills for active recall
@@ -45,6 +48,11 @@ The guided notebooks are in the `notebooks` folder:
 - `04_support_ticket_operations.ipynb`
 - `05_time_series_feature_builder.ipynb`
 - `06_reusable_cleaning_pipeline.ipynb`
+- `07_numpy_student_score_simulator.ipynb`
+- `08_numpy_weather_array_explorer.ipynb`
+- `09_numpy_sales_matrix_analyzer.ipynb`
+- `10_numpy_broadcasting_practice_lab.ipynb`
+- `11_numpy_monte_carlo_budget_risk.ipynb`
 
 Each notebook includes a project description, business goal, step-by-step tasks, synthetic dataset generation, commented Pandas code, practice prompts for changing the data, and final reflection prompts.
 

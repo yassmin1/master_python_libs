@@ -1,10 +1,10 @@
 """
-Pandas Pathway
---------------
+Python Data Pathways
+--------------------
 
-This Streamlit app teaches Pandas from beginner to advanced level. It is meant
-to be more than a syntax demo: it explains concepts, shows examples, gives
-practice tasks, and points learners toward full project notebooks.
+This Streamlit app teaches data Python libraries from beginner to advanced
+level. It is meant to be more than a syntax demo: it explains concepts, shows
+examples, gives practice tasks, and points learners toward project work.
 
 Why Streamlit?
 Streamlit lets us build an interactive Python app with very little web-code.
@@ -21,6 +21,7 @@ from __future__ import annotations
 import os
 from urllib.parse import quote
 
+import numpy as np
 import pandas as pd
 import streamlit as st
 
@@ -31,7 +32,7 @@ import streamlit as st
 # Streamlit reads this once when the app starts. The wide layout gives tables,
 # charts, and code examples enough horizontal room.
 st.set_page_config(
-    page_title="Pandas Pathway",
+    page_title="Python Data Pathways",
     page_icon="P",
     layout="wide",
 )
@@ -655,6 +656,396 @@ PROJECTS = [
 ]
 
 
+NUMPY_MASTERY_MAP = [
+    {
+        "Stage": "1. Array mental model",
+        "What to master": "ndarray, shape, dtype, axes, dimensions",
+        "You can move on when": "You can explain the difference between a Python list and a NumPy array.",
+    },
+    {
+        "Stage": "2. Creating arrays",
+        "What to master": "array, arange, linspace, zeros, ones, random generators",
+        "You can move on when": "You can generate practice arrays without needing external files.",
+    },
+    {
+        "Stage": "3. Indexing and slicing",
+        "What to master": "positions, slices, rows, columns, boolean masks",
+        "You can move on when": "You can select values from 1D and 2D arrays confidently.",
+    },
+    {
+        "Stage": "4. Vectorized math",
+        "What to master": "elementwise operations, ufuncs, broadcasting",
+        "You can move on when": "You replace manual loops with array expressions.",
+    },
+    {
+        "Stage": "5. Aggregation",
+        "What to master": "sum, mean, min, max, std, axis",
+        "You can move on when": "You know how axis changes row-wise and column-wise results.",
+    },
+    {
+        "Stage": "6. Reshaping",
+        "What to master": "reshape, ravel, transpose, concatenate, stack",
+        "You can move on when": "You can change layout without changing the underlying values.",
+    },
+    {
+        "Stage": "7. Simulation",
+        "What to master": "default_rng, normal, integers, choice, reproducible seeds",
+        "You can move on when": "You can create synthetic numeric datasets for practice.",
+    },
+    {
+        "Stage": "8. Reliability",
+        "What to master": "NaN handling, clipping, dtype checks, shape validation",
+        "You can move on when": "Your array calculations handle edge cases intentionally.",
+    },
+]
+
+
+NUMPY_LESSONS = {
+    "Beginner": {
+        "goal": "Understand arrays, shapes, dtypes, indexing, and simple vectorized math.",
+        "explanation": (
+            "NumPy is the base layer for much of the Python data ecosystem. Start by "
+            "thinking in arrays: values with a shape, a dtype, and fast operations."
+        ),
+        "modules": [
+            {
+                "title": "1. Create and inspect arrays",
+                "why": "Shape and dtype tell you what kind of numeric object you are working with.",
+                "code": """import numpy as np
+
+scores = np.array([72, 85, 91, 64, 88])
+
+scores.shape
+scores.dtype
+scores.mean()""",
+            },
+            {
+                "title": "2. Generate practice data",
+                "why": "Synthetic arrays let you practice without waiting for a real dataset.",
+                "code": """rng = np.random.default_rng(seed=42)
+
+temperatures = rng.normal(loc=70, scale=8, size=30)
+temperatures = temperatures.round(1)
+temperatures[:5]""",
+            },
+            {
+                "title": "3. Select values",
+                "why": "Indexing and slicing are the foundation for every array workflow.",
+                "code": """scores[0]       # first value
+scores[-1]      # last value
+scores[:3]      # first three values
+scores[scores >= 80]  # boolean mask""",
+            },
+            {
+                "title": "4. Use vectorized operations",
+                "why": "NumPy applies math to whole arrays, which is clearer and faster than manual loops.",
+                "code": """curved_scores = np.minimum(scores + 5, 100)
+passed = curved_scores >= 70
+
+curved_scores
+passed""",
+            },
+        ],
+    },
+    "Intermediate": {
+        "goal": "Work with 2D arrays, axis-based summaries, broadcasting, and reshaping.",
+        "explanation": (
+            "Intermediate NumPy is about controlling array layout. Most mistakes come "
+            "from misunderstanding shape, axis, or broadcasting rules."
+        ),
+        "modules": [
+            {
+                "title": "1. Build a 2D array",
+                "why": "Many numeric datasets are matrices: rows are observations and columns are measurements.",
+                "code": """matrix = np.array([
+    [72, 85, 91],
+    [64, 88, 79],
+    [90, 93, 87],
+    [58, 71, 69],
+])
+
+matrix.shape""",
+            },
+            {
+                "title": "2. Summarize by axis",
+                "why": "Axis controls whether you summarize columns, rows, or the whole array.",
+                "code": """column_means = matrix.mean(axis=0)
+row_means = matrix.mean(axis=1)
+overall_mean = matrix.mean()""",
+            },
+            {
+                "title": "3. Broadcast values",
+                "why": "Broadcasting lets smaller arrays align with larger arrays for vectorized math.",
+                "code": """curve_by_assignment = np.array([3, 5, 2])
+curved_matrix = np.minimum(matrix + curve_by_assignment, 100)""",
+            },
+            {
+                "title": "4. Reshape data",
+                "why": "Reshaping changes layout while preserving values when the element count matches.",
+                "code": """values = np.arange(1, 13)
+table = values.reshape(3, 4)
+flat = table.ravel()""",
+            },
+        ],
+    },
+    "Advanced": {
+        "goal": "Build simulations, handle missing values, validate shapes, and prepare arrays for modeling.",
+        "explanation": (
+            "Advanced NumPy work is about reproducible numeric pipelines: generate data, "
+            "transform it, validate it, and summarize results."
+        ),
+        "modules": [
+            {
+                "title": "1. Simulate a dataset",
+                "why": "Simulation is useful for testing algorithms and creating practice problems.",
+                "code": """rng = np.random.default_rng(seed=42)
+
+customer_spend = rng.lognormal(mean=4.2, sigma=0.5, size=1000)
+monthly_spend = customer_spend.reshape(100, 10)""",
+            },
+            {
+                "title": "2. Handle missing numeric values",
+                "why": "NumPy uses NaN for missing floating-point values.",
+                "code": """data = monthly_spend.copy()
+data[0, 0] = np.nan
+
+column_means = np.nanmean(data, axis=0)
+missing_count = np.isnan(data).sum()""",
+            },
+            {
+                "title": "3. Validate shape before math",
+                "why": "Shape checks make errors easier to understand than failed broadcasting later.",
+                "code": """weights = np.array([0.2, 0.3, 0.5])
+
+if weights.ndim != 1:
+    raise ValueError("weights must be one-dimensional")""",
+            },
+            {
+                "title": "4. Create reusable numeric functions",
+                "why": "Reusable functions make array workflows testable and repeatable.",
+                "code": """def z_score(values):
+    values = np.asarray(values, dtype=float)
+    return (values - np.nanmean(values)) / np.nanstd(values)
+
+standardized = z_score(customer_spend)""",
+            },
+        ],
+    },
+}
+
+
+NUMPY_CONCEPT_LIBRARY = {
+    "ndarray": {
+        "meaning": "The ndarray is NumPy's core object: a typed, multi-dimensional array.",
+        "example": """values = np.array([10, 20, 30])
+values.shape
+values.dtype""",
+        "mastery_check": "Explain why one array usually has one dtype.",
+    },
+    "Shape and Axis": {
+        "meaning": "Shape describes array dimensions. Axis tells NumPy which direction to calculate across.",
+        "example": """matrix.shape
+matrix.mean(axis=0)  # column means
+matrix.mean(axis=1)  # row means""",
+        "mastery_check": "Predict the output shape before running an axis-based calculation.",
+    },
+    "Boolean Masks": {
+        "meaning": "A boolean mask is an array of True/False values used to filter or update values.",
+        "example": """high_scores = scores >= 80
+scores[high_scores]""",
+        "mastery_check": "Create masks with vectorized comparisons instead of loops.",
+    },
+    "Broadcasting": {
+        "meaning": "Broadcasting lets arrays with compatible shapes work together in arithmetic.",
+        "example": """matrix + np.array([1, 2, 3])""",
+        "mastery_check": "Know why a column adjustment may need shape `(n, 1)`.",
+    },
+    "Random Generator": {
+        "meaning": "default_rng creates reproducible random numbers for simulations and synthetic datasets.",
+        "example": """rng = np.random.default_rng(seed=42)
+rng.normal(loc=0, scale=1, size=5)""",
+        "mastery_check": "Use seeds for repeatable lessons and `seed=None` for fresh random practice.",
+    },
+    "NaN": {
+        "meaning": "NaN represents missing floating-point values. Use nan-aware functions when needed.",
+        "example": """np.isnan(data).sum()
+np.nanmean(data)""",
+        "mastery_check": "Choose `np.mean` or `np.nanmean` intentionally.",
+    },
+}
+
+
+NUMPY_CHEAT_SHEETS = {
+    "Create": [
+        ("Array from list", "np.array([1, 2, 3])"),
+        ("Range", "np.arange(0, 10, 2)"),
+        ("Even spacing", "np.linspace(0, 1, 5)"),
+        ("Zeros", "np.zeros((3, 4))"),
+        ("Random normal", "rng.normal(0, 1, size=100)"),
+    ],
+    "Inspect": [
+        ("Shape", "arr.shape"),
+        ("Dimensions", "arr.ndim"),
+        ("Data type", "arr.dtype"),
+        ("Size", "arr.size"),
+        ("Missing count", "np.isnan(arr).sum()"),
+    ],
+    "Select": [
+        ("First value", "arr[0]"),
+        ("Last value", "arr[-1]"),
+        ("Slice", "arr[:5]"),
+        ("Column from matrix", "matrix[:, 0]"),
+        ("Boolean filter", "arr[arr > 0]"),
+    ],
+    "Calculate": [
+        ("Elementwise math", "arr * 100"),
+        ("Clip values", "np.clip(arr, 0, 1)"),
+        ("Mean", "arr.mean()"),
+        ("Column means", "matrix.mean(axis=0)"),
+        ("NaN-safe mean", "np.nanmean(arr)"),
+    ],
+    "Reshape": [
+        ("Reshape", "arr.reshape(3, 4)"),
+        ("Flatten", "matrix.ravel()"),
+        ("Transpose", "matrix.T"),
+        ("Stack rows", "np.vstack([a, b])"),
+        ("Stack columns", "np.column_stack([a, b])"),
+    ],
+}
+
+
+NUMPY_COMMON_MISTAKES = [
+    {
+        "mistake": "Confusing axis 0 and axis 1",
+        "bad": """matrix.mean(axis=1)  # expected column means""",
+        "better": """matrix.mean(axis=0)  # column means""",
+        "why": "Axis 0 moves down rows and summarizes each column. Axis 1 moves across columns and summarizes each row.",
+    },
+    {
+        "mistake": "Using Python lists for numeric math",
+        "bad": """[1, 2, 3] * 2  # repeats the list""",
+        "better": """np.array([1, 2, 3]) * 2""",
+        "why": "NumPy arrays perform elementwise numeric operations.",
+    },
+    {
+        "mistake": "Forgetting NaN-aware functions",
+        "bad": """values.mean()""",
+        "better": """np.nanmean(values)""",
+        "why": "A single NaN can make the regular mean return NaN.",
+    },
+    {
+        "mistake": "Changing shape without checking element count",
+        "bad": """np.arange(10).reshape(3, 4)""",
+        "better": """np.arange(12).reshape(3, 4)""",
+        "why": "Reshape requires the same total number of elements.",
+    },
+]
+
+
+NUMPY_PRACTICE_DRILLS = [
+    {
+        "skill": "Creation",
+        "task": "Generate 30 simulated daily temperatures with mean 70 and standard deviation 8.",
+        "answer": """rng = np.random.default_rng(seed=42)
+temperatures = rng.normal(loc=70, scale=8, size=30)""",
+    },
+    {
+        "skill": "Selection",
+        "task": "Return only scores greater than or equal to 80.",
+        "answer": """high_scores = scores[scores >= 80]""",
+    },
+    {
+        "skill": "Aggregation",
+        "task": "Calculate column means for a 2D matrix.",
+        "answer": """column_means = matrix.mean(axis=0)""",
+    },
+    {
+        "skill": "Broadcasting",
+        "task": "Add a different curve value to each column in a score matrix.",
+        "answer": """curved = matrix + np.array([3, 5, 2])""",
+    },
+    {
+        "skill": "Missing values",
+        "task": "Count missing values and calculate a NaN-safe average.",
+        "answer": """missing_count = np.isnan(values).sum()
+average = np.nanmean(values)""",
+    },
+]
+
+
+NUMPY_QUIZ_QUESTIONS = [
+    {
+        "question": "Which attribute shows the dimensions of an array?",
+        "choices": ["arr.shape", "arr.columns", "arr.head()"],
+        "answer": "arr.shape",
+        "explanation": "shape returns the size of each array dimension.",
+    },
+    {
+        "question": "Which function creates evenly spaced values between two endpoints?",
+        "choices": ["np.linspace", "np.value_counts", "np.merge"],
+        "answer": "np.linspace",
+        "explanation": "linspace is useful for grids, charts, and numeric intervals.",
+    },
+    {
+        "question": "What does axis=0 usually summarize in a 2D array?",
+        "choices": ["Columns", "Rows", "Only the first cell"],
+        "answer": "Columns",
+        "explanation": "axis=0 moves down rows, producing one result per column.",
+    },
+    {
+        "question": "Which expression filters positive values from an array?",
+        "choices": ["arr[arr > 0]", "arr.filter('positive')", "arr.loc[arr > 0]"],
+        "answer": "arr[arr > 0]",
+        "explanation": "The comparison creates a boolean mask, and the mask selects matching values.",
+    },
+    {
+        "question": "Which tool creates reproducible random practice data?",
+        "choices": ["np.random.default_rng(seed=42)", "np.read_csv()", "np.groupby()"],
+        "answer": "np.random.default_rng(seed=42)",
+        "explanation": "A seeded generator gives the same random sequence each time.",
+    },
+]
+
+
+NUMPY_PROJECTS = [
+    {
+        "level": "Beginner",
+        "title": "Student Score Simulator",
+        "description": "Generate synthetic exam scores, curve them, and summarize pass rates.",
+        "deliverables": ["Generated score array", "Pass-rate summary", "Short interpretation"],
+        "notebook": "notebooks/07_numpy_student_score_simulator.ipynb",
+    },
+    {
+        "level": "Beginner",
+        "title": "Weather Array Explorer",
+        "description": "Simulate daily temperatures and find unusually hot or cold days.",
+        "deliverables": ["Temperature array", "Boolean masks", "Extreme-day counts"],
+        "notebook": "notebooks/08_numpy_weather_array_explorer.ipynb",
+    },
+    {
+        "level": "Intermediate",
+        "title": "Sales Matrix Analyzer",
+        "description": "Generate a store-by-product sales matrix and summarize by row and column.",
+        "deliverables": ["2D sales matrix", "Store totals", "Product averages"],
+        "notebook": "notebooks/09_numpy_sales_matrix_analyzer.ipynb",
+    },
+    {
+        "level": "Intermediate",
+        "title": "Broadcasting Practice Lab",
+        "description": "Apply product prices, discounts, or weights across a matrix using broadcasting.",
+        "deliverables": ["Broadcasted calculation", "Shape explanation", "Validation checks"],
+        "notebook": "notebooks/10_numpy_broadcasting_practice_lab.ipynb",
+    },
+    {
+        "level": "Advanced",
+        "title": "Monte Carlo Budget Risk",
+        "description": "Simulate thousands of monthly costs and estimate the chance of going over budget.",
+        "deliverables": ["Simulation array", "Risk estimate", "Scenario summary"],
+        "notebook": "notebooks/11_numpy_monte_carlo_budget_risk.ipynb",
+    },
+]
+
+
 def create_sales_data() -> pd.DataFrame:
     """Create a small DataFrame used by the playground.
 
@@ -682,20 +1073,33 @@ def create_sales_data() -> pd.DataFrame:
     return df
 
 
-def render_header() -> None:
+def create_numpy_matrix(rows: int, columns: int, seed: int) -> np.ndarray:
+    """Create a synthetic numeric matrix for the NumPy playground."""
+    rng = np.random.default_rng(seed=seed)
+    base = rng.normal(loc=75, scale=12, size=(rows, columns))
+    return np.clip(base, 0, 100).round(1)
+
+
+def render_header(track: str) -> None:
     """Render the app title and high-level learning promise."""
-    st.title("Pandas Pathway")
-    st.subheader("A complete Pandas learning path from first DataFrame to advanced analysis.")
+    st.title("Python Data Pathways")
+    st.subheader(f"{track} track")
     st.write(
-        "The goal is mastery: understand the mental model, practice the syntax, avoid "
-        "common mistakes, and complete real projects that look like workplace analysis."
+        "Choose a library track, learn the mental model, practice the syntax, avoid "
+        "common mistakes, and complete projects that look like real analysis work."
     )
 
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Learning stages", len(MASTERY_MAP))
-    col2.metric("Concepts", len(CONCEPT_LIBRARY))
-    col3.metric("Cheat sheet topics", len(CHEAT_SHEETS))
-    col4.metric("Projects", len(PROJECTS))
+    if track == "Pandas":
+        col1.metric("Learning stages", len(MASTERY_MAP))
+        col2.metric("Concepts", len(CONCEPT_LIBRARY))
+        col3.metric("Cheat sheet topics", len(CHEAT_SHEETS))
+        col4.metric("Projects", len(PROJECTS))
+    else:
+        col1.metric("Learning stages", len(NUMPY_MASTERY_MAP))
+        col2.metric("Concepts", len(NUMPY_CONCEPT_LIBRARY))
+        col3.metric("Cheat sheet topics", len(NUMPY_CHEAT_SHEETS))
+        col4.metric("Projects", len(NUMPY_PROJECTS))
 
 
 def render_mastery_map() -> None:
@@ -1074,26 +1478,311 @@ def render_study_plan() -> None:
     )
 
 
+def render_numpy_mastery_map() -> None:
+    """Render the complete NumPy mastery roadmap."""
+    st.header("NumPy Mastery Map")
+    st.write(
+        "Use this roadmap as your checklist. NumPy mastery means understanding shape, "
+        "dtype, axis, broadcasting, and vectorized numeric thinking."
+    )
+
+    mastery = pd.DataFrame(NUMPY_MASTERY_MAP)
+    st.dataframe(mastery, use_container_width=True, hide_index=True)
+
+    st.subheader("How to study each stage")
+    st.write(
+        "For every stage: run the example, change the shape or seed, predict the output "
+        "shape, then explain the result without relying on trial and error."
+    )
+
+
+def render_numpy_concepts() -> None:
+    """Render NumPy concept explanations."""
+    st.header("NumPy Concept Library")
+    st.write(
+        "This section explains the ideas behind NumPy syntax. Most NumPy errors become "
+        "easier to solve when you can reason about shape and dtype."
+    )
+
+    selected_concept = st.selectbox("Choose a concept", list(NUMPY_CONCEPT_LIBRARY.keys()))
+    concept = NUMPY_CONCEPT_LIBRARY[selected_concept]
+
+    st.subheader(selected_concept)
+    st.write(concept["meaning"])
+    st.code(concept["example"], language="python")
+    st.info(f"Mastery check: {concept['mastery_check']}")
+
+
+def render_numpy_lessons() -> None:
+    """Render NumPy lessons by level."""
+    st.header("1. Learn NumPy Concepts")
+
+    selected_level = st.radio(
+        "Choose your level",
+        list(NUMPY_LESSONS.keys()),
+        horizontal=True,
+        help="Start with Beginner if arrays, shape, and dtype are new to you.",
+    )
+
+    lesson = NUMPY_LESSONS[selected_level]
+    st.subheader(lesson["goal"])
+    st.write(lesson["explanation"])
+
+    for module in lesson["modules"]:
+        with st.expander(module["title"], expanded=True):
+            st.write(module["why"])
+            st.code(module["code"], language="python")
+
+
+def render_numpy_cheat_sheets() -> None:
+    """Render NumPy syntax cheat sheets."""
+    st.header("NumPy Cheat Sheets")
+    st.write("Use these as quick references after you understand the concept.")
+
+    selected_topic = st.selectbox("Choose a topic", list(NUMPY_CHEAT_SHEETS.keys()))
+    rows = pd.DataFrame(NUMPY_CHEAT_SHEETS[selected_topic], columns=["Task", "Syntax"])
+    st.dataframe(rows, use_container_width=True, hide_index=True)
+
+    st.subheader("Copyable examples")
+    for task, syntax in NUMPY_CHEAT_SHEETS[selected_topic]:
+        st.code(f"# {task}\n{syntax}", language="python")
+
+
+def render_numpy_common_mistakes() -> None:
+    """Render common NumPy mistakes and safer patterns."""
+    st.header("Common NumPy Mistakes")
+
+    for item in NUMPY_COMMON_MISTAKES:
+        with st.expander(item["mistake"], expanded=False):
+            left, right = st.columns(2)
+            with left:
+                st.write("Risky pattern")
+                st.code(item["bad"], language="python")
+            with right:
+                st.write("Better pattern")
+                st.code(item["better"], language="python")
+            st.write(item["why"])
+
+
+def render_numpy_drills() -> None:
+    """Render NumPy practice drills."""
+    st.header("2. NumPy Drills")
+    st.write(
+        "Try writing the answer before opening the solution. The goal is active recall, "
+        "not recognizing code after seeing it."
+    )
+
+    selected_skill = st.selectbox(
+        "Filter by skill",
+        ["All"] + sorted({drill["skill"] for drill in NUMPY_PRACTICE_DRILLS}),
+    )
+
+    visible_drills = [
+        drill
+        for drill in NUMPY_PRACTICE_DRILLS
+        if selected_skill == "All" or drill["skill"] == selected_skill
+    ]
+
+    for index, drill in enumerate(visible_drills, start=1):
+        st.subheader(f"Drill {index}: {drill['skill']}")
+        st.write(drill["task"])
+        with st.expander("Show answer"):
+            st.code(drill["answer"], language="python")
+
+
+def render_numpy_playground() -> None:
+    """Render an interactive NumPy array playground."""
+    st.header("3. Practice With a NumPy Array")
+    st.write(
+        "Change the controls and watch how the array, summary statistics, and equivalent "
+        "NumPy code change."
+    )
+
+    rows = st.slider("Rows", min_value=3, max_value=12, value=6)
+    columns = st.slider("Columns", min_value=2, max_value=8, value=4)
+    seed = st.number_input("Random seed", min_value=0, max_value=9999, value=42, step=1)
+    threshold = st.slider("Highlight values at or above", min_value=0, max_value=100, value=85)
+
+    matrix = create_numpy_matrix(rows=rows, columns=columns, seed=int(seed))
+    mask = matrix >= threshold
+
+    st.subheader("Generated array")
+    st.dataframe(pd.DataFrame(matrix), use_container_width=True)
+
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Shape", str(matrix.shape))
+    col2.metric("Mean", f"{matrix.mean():.1f}")
+    col3.metric("Values above threshold", int(mask.sum()))
+
+    summary = pd.DataFrame(
+        {
+            "column": [f"Column {index}" for index in range(columns)],
+            "mean": matrix.mean(axis=0).round(1),
+            "min": matrix.min(axis=0).round(1),
+            "max": matrix.max(axis=0).round(1),
+        }
+    )
+    st.subheader("Column summary")
+    st.dataframe(summary, use_container_width=True, hide_index=True)
+
+    st.caption("Equivalent NumPy code")
+    st.code(
+        f"""rng = np.random.default_rng(seed={int(seed)})
+matrix = rng.normal(loc=75, scale=12, size=({rows}, {columns}))
+matrix = np.clip(matrix, 0, 100).round(1)
+
+mask = matrix >= {threshold}
+column_means = matrix.mean(axis=0)
+values_above_threshold = mask.sum()""",
+        language="python",
+    )
+
+
+def render_numpy_quiz() -> None:
+    """Render a simple NumPy quiz."""
+    st.header("4. NumPy Quiz")
+    st.write("Choose an answer, then check it immediately.")
+
+    for index, item in enumerate(NUMPY_QUIZ_QUESTIONS, start=1):
+        with st.container(border=True):
+            st.subheader(f"Question {index}")
+            st.write(item["question"])
+            answer = st.radio(
+                "Answer",
+                item["choices"],
+                key=f"numpy-quiz-{index}",
+                label_visibility="collapsed",
+            )
+            if st.button("Check answer", key=f"numpy-check-{index}"):
+                if answer == item["answer"]:
+                    st.success(f"Correct. {item['explanation']}")
+                else:
+                    st.error(f"Not quite. Correct answer: {item['answer']}")
+                    st.write(item["explanation"])
+
+
+def render_numpy_projects() -> None:
+    """Render NumPy project ideas grouped by difficulty."""
+    st.header("5. Build NumPy Projects")
+    st.write(
+        "These projects focus on arrays, random data generation, broadcasting, summary "
+        "statistics, and simulation."
+    )
+    if not GITHUB_REPO_SLUG:
+        st.info(
+            "To make the Colab buttons active, push this project to GitHub and set "
+            "`GITHUB_REPO_SLUG`, for example `your-name/your-repo`, before running Streamlit."
+        )
+
+    selected_project_level = st.radio(
+        "Filter projects by level",
+        ["All", "Beginner", "Intermediate", "Advanced"],
+        horizontal=True,
+        key="numpy-project-level",
+    )
+
+    visible_projects = [
+        project
+        for project in NUMPY_PROJECTS
+        if selected_project_level == "All" or project["level"] == selected_project_level
+    ]
+
+    for project in visible_projects:
+        with st.container(border=True):
+            st.subheader(f"{project['title']} ({project['level']})")
+            st.write(project["description"])
+            st.write("Deliverables:")
+            for deliverable in project["deliverables"]:
+                st.write(f"- {deliverable}")
+            st.caption(f"Notebook: {project['notebook']}")
+            colab_url = build_colab_url(project["notebook"])
+            if colab_url:
+                st.link_button("Open in Colab", colab_url)
+            else:
+                st.button("Open in Colab", disabled=True, key=f"numpy-colab-{project['notebook']}")
+
+
+def render_numpy_study_plan() -> None:
+    """Render a recommended NumPy study plan."""
+    st.header("6. Suggested NumPy Study Plan")
+
+    plan = pd.DataFrame(
+        [
+            {
+                "Week": 1,
+                "Focus": "Array mental model",
+                "Practice": "Create arrays, inspect shape and dtype, and explain dimensions",
+                "Proof of mastery": "Predict output shapes before running code",
+            },
+            {
+                "Week": 2,
+                "Focus": "Indexing and masks",
+                "Practice": "Slice 1D and 2D arrays and build boolean filters",
+                "Proof of mastery": "Select target values without converting to lists",
+            },
+            {
+                "Week": 3,
+                "Focus": "Vectorization and broadcasting",
+                "Practice": "Replace loops with array math and column adjustments",
+                "Proof of mastery": "Explain why compatible shapes broadcast",
+            },
+            {
+                "Week": 4,
+                "Focus": "Simulation project",
+                "Practice": "Generate random data, summarize outcomes, and validate assumptions",
+                "Proof of mastery": "Build a reproducible simulation with a seed",
+            },
+        ]
+    )
+
+    st.dataframe(plan, use_container_width=True, hide_index=True)
+
+
 def main() -> None:
     """Main application entry point."""
-    render_header()
+    st.sidebar.title("Learning Track")
+    track = st.sidebar.radio(
+        "What are you learning?",
+        ["Pandas", "NumPy"],
+        help="Choose one track first, then work through that library's roadmap.",
+    )
+
+    render_header(track)
 
     st.sidebar.title("Navigation")
-    page = st.sidebar.radio(
-        "Go to",
-        [
-            "Mastery Map",
-            "Concept Library",
-            "Lessons",
-            "Cheat Sheets",
-            "Playground",
-            "Drills",
-            "Quiz",
-            "Common Mistakes",
-            "Projects",
-            "Study Plan",
-        ],
-    )
+    if track == "Pandas":
+        page = st.sidebar.radio(
+            "Go to",
+            [
+                "Mastery Map",
+                "Concept Library",
+                "Lessons",
+                "Cheat Sheets",
+                "Playground",
+                "Drills",
+                "Quiz",
+                "Common Mistakes",
+                "Projects",
+                "Study Plan",
+            ],
+        )
+    else:
+        page = st.sidebar.radio(
+            "Go to",
+            [
+                "Mastery Map",
+                "Concept Library",
+                "Lessons",
+                "Cheat Sheets",
+                "Playground",
+                "Drills",
+                "Quiz",
+                "Common Mistakes",
+                "Projects",
+                "Study Plan",
+            ],
+            key="numpy-page",
+        )
 
     st.sidebar.markdown("---")
     st.sidebar.write("Recommended order:")
@@ -1104,26 +1793,48 @@ def main() -> None:
     st.sidebar.write("5. Drills and Quiz")
     st.sidebar.write("6. Projects")
 
-    if page == "Mastery Map":
-        render_mastery_map()
-    elif page == "Concept Library":
-        render_concepts()
-    elif page == "Lessons":
-        render_lessons()
-    elif page == "Cheat Sheets":
-        render_cheat_sheets()
-    elif page == "Playground":
-        render_playground()
-    elif page == "Drills":
-        render_drills()
-    elif page == "Quiz":
-        render_quiz()
-    elif page == "Common Mistakes":
-        render_common_mistakes()
-    elif page == "Projects":
-        render_projects()
-    elif page == "Study Plan":
-        render_study_plan()
+    if track == "Pandas":
+        if page == "Mastery Map":
+            render_mastery_map()
+        elif page == "Concept Library":
+            render_concepts()
+        elif page == "Lessons":
+            render_lessons()
+        elif page == "Cheat Sheets":
+            render_cheat_sheets()
+        elif page == "Playground":
+            render_playground()
+        elif page == "Drills":
+            render_drills()
+        elif page == "Quiz":
+            render_quiz()
+        elif page == "Common Mistakes":
+            render_common_mistakes()
+        elif page == "Projects":
+            render_projects()
+        elif page == "Study Plan":
+            render_study_plan()
+    else:
+        if page == "Mastery Map":
+            render_numpy_mastery_map()
+        elif page == "Concept Library":
+            render_numpy_concepts()
+        elif page == "Lessons":
+            render_numpy_lessons()
+        elif page == "Cheat Sheets":
+            render_numpy_cheat_sheets()
+        elif page == "Playground":
+            render_numpy_playground()
+        elif page == "Drills":
+            render_numpy_drills()
+        elif page == "Quiz":
+            render_numpy_quiz()
+        elif page == "Common Mistakes":
+            render_numpy_common_mistakes()
+        elif page == "Projects":
+            render_numpy_projects()
+        elif page == "Study Plan":
+            render_numpy_study_plan()
 
 
 if __name__ == "__main__":

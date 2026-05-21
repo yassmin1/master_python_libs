@@ -1020,18 +1020,546 @@ PROJECTS = {
 }
 
 
+NUMPY_PROJECTS = {
+    "07_numpy_student_score_simulator.ipynb": notebook(
+        [
+            markdown_cell(
+                """
+                # NumPy Student Score Simulator
+
+                **Level:** Beginner
+
+                ## Project description
+
+                Generate synthetic exam scores, curve them, and summarize pass rates.
+                This notebook teaches students how to create their own numeric practice
+                datasets with NumPy.
+
+                ## Skills practiced
+
+                - Creating arrays with `np.random.default_rng`
+                - Inspecting shape and dtype
+                - Vectorized math
+                - Boolean masks
+                - Summary statistics
+                """
+            ),
+            markdown_cell("## Step 1: Generate synthetic score data"),
+            code_cell(
+                """
+                import numpy as np
+                import pandas as pd
+                import secrets
+
+                practice_run_name = f"numpy-scores-{secrets.token_hex(3)}"
+                print(f"Practice run: {practice_run_name}")
+
+                def make_score_data(student_count=40, seed=42):
+                    \"\"\"Create synthetic exam scores for practice.\"\"\"
+                    rng = np.random.default_rng(seed)
+                    scores = rng.normal(loc=76, scale=12, size=student_count)
+                    return np.clip(scores, 0, 100).round(1)
+
+                scores = make_score_data(student_count=40, seed=42)
+                scores[:10]
+                """
+            ),
+            code_cell(
+                """
+                scores.shape, scores.dtype, scores.mean().round(1)
+                """
+            ),
+            markdown_cell("## Step 2: Curve scores with vectorized math"),
+            code_cell(
+                """
+                curved_scores = np.minimum(scores + 5, 100)
+                curved_scores[:10]
+                """
+            ),
+            markdown_cell("## Step 3: Calculate pass-rate metrics"),
+            code_cell(
+                """
+                passing_mask = curved_scores >= 70
+
+                pass_rate = passing_mask.mean()
+                average_score = curved_scores.mean()
+                highest_score = curved_scores.max()
+                lowest_score = curved_scores.min()
+
+                pd.DataFrame({
+                    "metric": ["Pass rate", "Average score", "Highest score", "Lowest score"],
+                    "value": [pass_rate, average_score, highest_score, lowest_score],
+                })
+                """
+            ),
+            markdown_cell("## Step 4: Find students who need support"),
+            code_cell(
+                """
+                needs_support = curved_scores[curved_scores < 70]
+                needs_support
+                """
+            ),
+            markdown_cell(
+                """
+                ## Final project notes
+
+                - Average score after curve:
+                - Pass rate:
+                - Number of students below 70:
+                - One teaching action you recommend:
+                """
+            ),
+            markdown_cell(
+                """
+                ## Practice extension: Generate your own dataset
+
+                Change `student_count` and `seed`. Use `seed=None` when you want a fresh
+                randomized dataset each run.
+                """
+            ),
+            code_cell(
+                """
+                my_scores = make_score_data(student_count=100, seed=None)
+                my_scores[:10]
+                """
+            ),
+        ]
+    ),
+    "08_numpy_weather_array_explorer.ipynb": notebook(
+        [
+            markdown_cell(
+                """
+                # NumPy Weather Array Explorer
+
+                **Level:** Beginner
+
+                ## Project description
+
+                Simulate daily temperatures and find unusually hot or cold days.
+
+                ## Skills practiced
+
+                - Generating synthetic arrays
+                - Boolean masks
+                - Min, max, mean, and standard deviation
+                - Counting conditions
+                """
+            ),
+            code_cell(
+                """
+                import numpy as np
+                import pandas as pd
+                import secrets
+
+                practice_run_name = f"numpy-weather-{secrets.token_hex(3)}"
+                print(f"Practice run: {practice_run_name}")
+
+                def make_temperature_data(day_count=30, seed=42):
+                    \"\"\"Create synthetic daily temperatures.\"\"\"
+                    rng = np.random.default_rng(seed)
+                    baseline = rng.normal(loc=72, scale=9, size=day_count)
+                    trend = np.linspace(-2, 4, day_count)
+                    return (baseline + trend).round(1)
+
+                temperatures = make_temperature_data(day_count=30, seed=42)
+                temperatures
+                """
+            ),
+            markdown_cell("## Step 1: Summarize the array"),
+            code_cell(
+                """
+                summary = pd.DataFrame({
+                    "metric": ["Days", "Average", "Minimum", "Maximum", "Standard deviation"],
+                    "value": [
+                        temperatures.size,
+                        temperatures.mean().round(1),
+                        temperatures.min(),
+                        temperatures.max(),
+                        temperatures.std().round(1),
+                    ],
+                })
+
+                summary
+                """
+            ),
+            markdown_cell("## Step 2: Build boolean masks"),
+            code_cell(
+                """
+                hot_days = temperatures >= 85
+                cold_days = temperatures <= 55
+
+                hot_days.sum(), cold_days.sum()
+                """
+            ),
+            code_cell(
+                """
+                temperatures[hot_days]
+                """
+            ),
+            markdown_cell(
+                """
+                ## Final project notes
+
+                - Average temperature:
+                - Number of hot days:
+                - Number of cold days:
+                - One weather pattern you noticed:
+                """
+            ),
+            markdown_cell(
+                """
+                ## Practice extension: Generate your own dataset
+
+                Change `day_count` and `seed`. Try 365 days to simulate a full year.
+                """
+            ),
+            code_cell(
+                """
+                my_temperatures = make_temperature_data(day_count=365, seed=None)
+                my_temperatures[:10]
+                """
+            ),
+        ]
+    ),
+    "09_numpy_sales_matrix_analyzer.ipynb": notebook(
+        [
+            markdown_cell(
+                """
+                # NumPy Sales Matrix Analyzer
+
+                **Level:** Intermediate
+
+                ## Project description
+
+                Generate a store-by-product sales matrix and summarize by row and column.
+
+                ## Skills practiced
+
+                - Working with 2D arrays
+                - Axis-based aggregation
+                - Shape reasoning
+                - Converting summaries to readable tables
+                """
+            ),
+            code_cell(
+                """
+                import numpy as np
+                import pandas as pd
+                import secrets
+
+                practice_run_name = f"numpy-sales-matrix-{secrets.token_hex(3)}"
+                print(f"Practice run: {practice_run_name}")
+
+                def make_sales_matrix(store_count=6, product_count=4, seed=42):
+                    \"\"\"Create a synthetic store-by-product units-sold matrix.\"\"\"
+                    rng = np.random.default_rng(seed)
+                    return rng.integers(20, 160, size=(store_count, product_count))
+
+                sales_matrix = make_sales_matrix(store_count=6, product_count=4, seed=42)
+                sales_matrix
+                """
+            ),
+            markdown_cell("## Step 1: Inspect shape and totals"),
+            code_cell(
+                """
+                sales_matrix.shape, sales_matrix.sum()
+                """
+            ),
+            markdown_cell("## Step 2: Summarize stores and products"),
+            code_cell(
+                """
+                store_totals = sales_matrix.sum(axis=1)
+                product_totals = sales_matrix.sum(axis=0)
+
+                store_totals, product_totals
+                """
+            ),
+            code_cell(
+                """
+                product_summary = pd.DataFrame({
+                    "product": [f"Product {i}" for i in range(1, sales_matrix.shape[1] + 1)],
+                    "units_sold": product_totals,
+                    "average_per_store": sales_matrix.mean(axis=0).round(1),
+                })
+
+                product_summary
+                """
+            ),
+            markdown_cell("## Step 3: Find top performers"),
+            code_cell(
+                """
+                top_store_index = store_totals.argmax()
+                top_product_index = product_totals.argmax()
+
+                top_store_index, top_product_index
+                """
+            ),
+            markdown_cell(
+                """
+                ## Final project notes
+
+                - Top store index:
+                - Top product index:
+                - Total units sold:
+                - One recommendation:
+                """
+            ),
+            markdown_cell(
+                """
+                ## Practice extension: Generate your own dataset
+
+                Change `store_count`, `product_count`, and `seed`. Use `seed=None` for a
+                fresh randomized matrix.
+                """
+            ),
+            code_cell(
+                """
+                my_sales_matrix = make_sales_matrix(store_count=10, product_count=8, seed=None)
+                my_sales_matrix.shape
+                """
+            ),
+        ]
+    ),
+    "10_numpy_broadcasting_practice_lab.ipynb": notebook(
+        [
+            markdown_cell(
+                """
+                # NumPy Broadcasting Practice Lab
+
+                **Level:** Intermediate
+
+                ## Project description
+
+                Apply product prices and discounts across a sales matrix using broadcasting.
+
+                ## Skills practiced
+
+                - Broadcasting row and column vectors
+                - Revenue calculations
+                - Shape validation
+                - Clipping and rounding
+                """
+            ),
+            code_cell(
+                """
+                import numpy as np
+                import pandas as pd
+                import secrets
+
+                practice_run_name = f"numpy-broadcasting-{secrets.token_hex(3)}"
+                print(f"Practice run: {practice_run_name}")
+
+                def make_broadcasting_data(store_count=5, product_count=4, seed=42):
+                    \"\"\"Create synthetic units, prices, and store discounts.\"\"\"
+                    rng = np.random.default_rng(seed)
+                    units = rng.integers(10, 100, size=(store_count, product_count))
+                    prices = rng.choice([15, 25, 40, 60, 90], size=product_count)
+                    discounts = rng.uniform(0, 0.15, size=store_count).round(2)
+                    return units, prices, discounts
+
+                units, prices, discounts = make_broadcasting_data(seed=42)
+                units, prices, discounts
+                """
+            ),
+            markdown_cell("## Step 1: Validate shapes"),
+            code_cell(
+                """
+                units.shape, prices.shape, discounts.shape
+                """
+            ),
+            markdown_cell("## Step 2: Broadcast prices across product columns"),
+            code_cell(
+                """
+                gross_revenue = units * prices
+                gross_revenue
+                """
+            ),
+            markdown_cell("## Step 3: Broadcast store discounts down rows"),
+            code_cell(
+                """
+                net_revenue = gross_revenue * (1 - discounts[:, np.newaxis])
+                net_revenue = net_revenue.round(2)
+                net_revenue
+                """
+            ),
+            code_cell(
+                """
+                pd.DataFrame({
+                    "store": [f"Store {i}" for i in range(1, units.shape[0] + 1)],
+                    "gross_revenue": gross_revenue.sum(axis=1).round(2),
+                    "net_revenue": net_revenue.sum(axis=1).round(2),
+                    "discount": discounts,
+                })
+                """
+            ),
+            markdown_cell(
+                """
+                ## Final project notes
+
+                - Shape of units:
+                - Shape of prices:
+                - Why `discounts[:, np.newaxis]` was needed:
+                - Top store by net revenue:
+                """
+            ),
+            markdown_cell(
+                """
+                ## Practice extension: Generate your own dataset
+
+                Change store and product counts. Predict the shapes before running the revenue cells.
+                """
+            ),
+            code_cell(
+                """
+                my_units, my_prices, my_discounts = make_broadcasting_data(
+                    store_count=8,
+                    product_count=6,
+                    seed=None,
+                )
+                my_units.shape, my_prices.shape, my_discounts.shape
+                """
+            ),
+        ]
+    ),
+    "11_numpy_monte_carlo_budget_risk.ipynb": notebook(
+        [
+            markdown_cell(
+                """
+                # NumPy Monte Carlo Budget Risk
+
+                **Level:** Advanced
+
+                ## Project description
+
+                Simulate thousands of monthly costs and estimate the chance of going over budget.
+
+                ## Skills practiced
+
+                - Monte Carlo simulation
+                - Random sampling
+                - Vectorized totals
+                - Risk estimation
+                - Percentiles
+                """
+            ),
+            code_cell(
+                """
+                import numpy as np
+                import pandas as pd
+                import secrets
+
+                practice_run_name = f"numpy-budget-risk-{secrets.token_hex(3)}"
+                print(f"Practice run: {practice_run_name}")
+
+                def simulate_monthly_costs(simulation_count=5000, seed=42):
+                    \"\"\"Create synthetic monthly cost simulations.\"\"\"
+                    rng = np.random.default_rng(seed)
+                    rent = rng.normal(loc=1400, scale=40, size=simulation_count)
+                    food = rng.normal(loc=520, scale=120, size=simulation_count)
+                    transport = rng.normal(loc=180, scale=60, size=simulation_count)
+                    health = rng.lognormal(mean=4.8, sigma=0.5, size=simulation_count)
+                    entertainment = rng.normal(loc=220, scale=80, size=simulation_count)
+                    costs = np.column_stack([rent, food, transport, health, entertainment])
+                    return np.clip(costs, 0, None).round(2)
+
+                costs = simulate_monthly_costs(simulation_count=5000, seed=42)
+                costs[:5]
+                """
+            ),
+            markdown_cell("## Step 1: Calculate total monthly costs"),
+            code_cell(
+                """
+                total_costs = costs.sum(axis=1)
+                total_costs[:10]
+                """
+            ),
+            markdown_cell("## Step 2: Estimate budget risk"),
+            code_cell(
+                """
+                budget = 2600
+                over_budget = total_costs > budget
+                risk = over_budget.mean()
+
+                risk
+                """
+            ),
+            markdown_cell("## Step 3: Summarize scenarios"),
+            code_cell(
+                """
+                scenario_summary = pd.DataFrame({
+                    "metric": ["Average total", "Median total", "90th percentile", "Over-budget risk"],
+                    "value": [
+                        total_costs.mean().round(2),
+                        np.median(total_costs).round(2),
+                        np.percentile(total_costs, 90).round(2),
+                        risk.round(3),
+                    ],
+                })
+
+                scenario_summary
+                """
+            ),
+            markdown_cell("## Step 4: Find category averages"),
+            code_cell(
+                """
+                categories = ["rent", "food", "transport", "health", "entertainment"]
+                category_summary = pd.DataFrame({
+                    "category": categories,
+                    "average_cost": costs.mean(axis=0).round(2),
+                    "p90_cost": np.percentile(costs, 90, axis=0).round(2),
+                })
+
+                category_summary
+                """
+            ),
+            markdown_cell(
+                """
+                ## Final project notes
+
+                - Budget used:
+                - Estimated over-budget risk:
+                - Highest average cost category:
+                - One recommendation:
+                """
+            ),
+            markdown_cell(
+                """
+                ## Practice extension: Generate your own simulation
+
+                Change `simulation_count`, `seed`, and `budget`. Use `seed=None` for a new
+                randomized simulation each run.
+                """
+            ),
+            code_cell(
+                """
+                my_costs = simulate_monthly_costs(simulation_count=10000, seed=None)
+                my_total_costs = my_costs.sum(axis=1)
+                (my_total_costs > 2800).mean()
+                """
+            ),
+        ]
+    ),
+}
+
+
 def write_index() -> None:
     """Write a README file that lists the generated notebooks."""
     lines = [
-        "# Pandas Project Notebooks",
+        "# Python Data Project Notebooks",
         "",
-        "These notebooks turn the app's project ideas into guided Pandas projects with synthetic practice datasets.",
+        "These notebooks turn the app's project ideas into guided Pandas and NumPy projects with synthetic practice datasets.",
         "",
-        "## Recommended order",
+        "## Pandas notebooks",
         "",
     ]
 
     for index, filename in enumerate(PROJECTS, start=1):
+        title = filename.removesuffix(".ipynb").replace("_", " ").title()
+        lines.append(f"{index}. [{title}]({filename})")
+
+    lines.extend(["", "## NumPy notebooks", ""])
+
+    for index, filename in enumerate(NUMPY_PROJECTS, start=1):
         title = filename.removesuffix(".ipynb").replace("_", " ").title()
         lines.append(f"{index}. [{title}]({filename})")
 
@@ -1053,12 +1581,12 @@ def main() -> None:
     """Generate all project notebooks."""
     NOTEBOOK_DIR.mkdir(exist_ok=True)
 
-    for filename, content in PROJECTS.items():
+    for filename, content in (PROJECTS | NUMPY_PROJECTS).items():
         path = NOTEBOOK_DIR / filename
         path.write_text(json.dumps(content, indent=2), encoding="utf-8")
 
     write_index()
-    print(f"Created {len(PROJECTS)} notebooks in {NOTEBOOK_DIR}")
+    print(f"Created {len(PROJECTS) + len(NUMPY_PROJECTS)} notebooks in {NOTEBOOK_DIR}")
 
 
 if __name__ == "__main__":
