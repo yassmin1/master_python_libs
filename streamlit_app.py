@@ -38,14 +38,14 @@ st.set_page_config(
 )
 
 
-# Colab can open notebooks directly from GitHub. After this project is pushed
-# to GitHub, set these before running the app:
+# Colab can open notebooks directly from GitHub. Override these if you fork or
+# move the project:
 #   $env:GITHUB_REPO_SLUG="your-github-user-or-org/your-repo"
 #   $env:GITHUB_BRANCH="main"
-#   $env:GITHUB_PROJECT_PATH="pandas-learning-app"
-GITHUB_REPO_SLUG = os.getenv("GITHUB_REPO_SLUG", "").strip()
+#   $env:GITHUB_PROJECT_PATH=""
+GITHUB_REPO_SLUG = os.getenv("GITHUB_REPO_SLUG", "yassmin1/master_python_libs").strip()
 GITHUB_BRANCH = os.getenv("GITHUB_BRANCH", "main").strip()
-GITHUB_PROJECT_PATH = os.getenv("GITHUB_PROJECT_PATH", "pandas-learning-app").strip("/")
+GITHUB_PROJECT_PATH = os.getenv("GITHUB_PROJECT_PATH", "").strip("/")
 
 
 def build_colab_url(notebook_path: str) -> str | None:

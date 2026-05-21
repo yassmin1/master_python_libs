@@ -56,11 +56,11 @@ The guided notebooks are in the `notebooks` folder:
 
 Each notebook includes a project description, business goal, step-by-step tasks, synthetic dataset generation, commented Pandas code, practice prompts for changing the data, and final reflection prompts.
 
-To make the project cards open notebooks in Google Colab, push this folder to GitHub and set these environment variables before running Streamlit:
+The project cards open notebooks in Google Colab from this GitHub repo by default. If you fork or move the project, set these environment variables before running Streamlit:
 
 ```powershell
 $env:GITHUB_REPO_SLUG="your-github-user-or-org/your-repo"
 $env:GITHUB_BRANCH="main"
-$env:GITHUB_PROJECT_PATH="pandas-learning-app"
+$env:GITHUB_PROJECT_PATH=""
 python -m streamlit run streamlit_app.py
 ```
