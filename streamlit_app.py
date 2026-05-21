@@ -62,6 +62,192 @@ def build_colab_url(notebook_path: str) -> str | None:
     )
 
 
+def apply_app_styles() -> None:
+    """Add lightweight visual styling for the Streamlit interface."""
+    st.markdown(
+        """
+        <style>
+        .main .block-container {
+            padding-top: 1.5rem;
+            max-width: 1180px;
+        }
+
+        .pathway-hero {
+            background:
+                radial-gradient(circle at 12% 15%, rgba(255, 184, 77, 0.28), transparent 34%),
+                radial-gradient(circle at 92% 12%, rgba(20, 184, 166, 0.22), transparent 30%),
+                linear-gradient(135deg, #102033 0%, #17324d 48%, #0f766e 100%);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 18px;
+            color: #ffffff;
+            padding: 2rem;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 18px 45px rgba(16, 32, 51, 0.20);
+        }
+
+        .pathway-kicker {
+            color: #fbbf24;
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0;
+            margin-bottom: 0.45rem;
+            text-transform: uppercase;
+        }
+
+        .pathway-hero h1 {
+            color: #ffffff;
+            font-size: clamp(2.1rem, 4vw, 4.4rem);
+            line-height: 1.02;
+            margin: 0;
+            letter-spacing: 0;
+        }
+
+        .pathway-hero p {
+            color: #d7f7ef;
+            font-size: 1.05rem;
+            line-height: 1.55;
+            margin: 1rem 0 0;
+            max-width: 760px;
+        }
+
+        .track-pill {
+            align-items: center;
+            background: rgba(255, 255, 255, 0.13);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 999px;
+            color: #ffffff;
+            display: inline-flex;
+            font-size: 0.92rem;
+            font-weight: 700;
+            gap: 0.45rem;
+            margin-top: 1.25rem;
+            padding: 0.55rem 0.85rem;
+        }
+
+        .track-card-grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            margin-bottom: 1.15rem;
+        }
+
+        .track-card {
+            border-radius: 16px;
+            padding: 1.15rem;
+            border: 1px solid #d9e4ea;
+            background: #ffffff;
+            box-shadow: 0 10px 28px rgba(17, 24, 39, 0.08);
+        }
+
+        .track-card.active {
+            border-color: #14b8a6;
+            box-shadow: 0 14px 34px rgba(20, 184, 166, 0.18);
+        }
+
+        .track-card.pandas {
+            border-top: 6px solid #ef5d50;
+        }
+
+        .track-card.numpy {
+            border-top: 6px solid #14b8a6;
+        }
+
+        .track-card h3 {
+            color: #102033;
+            font-size: 1.15rem;
+            margin: 0 0 0.35rem;
+            letter-spacing: 0;
+        }
+
+        .track-card p {
+            color: #44556a;
+            font-size: 0.94rem;
+            line-height: 1.45;
+            margin: 0;
+        }
+
+        .stat-grid {
+            display: grid;
+            gap: 0.8rem;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            margin-bottom: 1.4rem;
+        }
+
+        .stat-tile {
+            background: #ffffff;
+            border: 1px solid #d9e4ea;
+            border-radius: 14px;
+            padding: 1rem;
+            box-shadow: 0 8px 22px rgba(17, 24, 39, 0.06);
+        }
+
+        .stat-value {
+            color: #0f766e;
+            font-size: 1.65rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: #526174;
+            font-size: 0.82rem;
+            font-weight: 700;
+            margin-top: 0.45rem;
+        }
+
+        section[data-testid="stSidebar"] {
+            background: #f6f9fb;
+            border-right: 1px solid #dbe7ee;
+        }
+
+        .sidebar-guide {
+            background: #ffffff;
+            border: 1px solid #dbe7ee;
+            border-radius: 12px;
+            color: #334155;
+            margin-top: 1rem;
+            padding: 0.85rem 0.9rem;
+        }
+
+        .sidebar-guide-title {
+            color: #102033;
+            font-size: 0.9rem;
+            font-weight: 800;
+            margin-bottom: 0.45rem;
+        }
+
+        .sidebar-guide ol {
+            margin: 0;
+            padding-left: 1.15rem;
+        }
+
+        .sidebar-guide li {
+            font-size: 0.86rem;
+            line-height: 1.55;
+            margin: 0;
+        }
+
+        div[data-testid="stRadio"] label {
+            font-weight: 650;
+        }
+
+        @media (max-width: 760px) {
+            .pathway-hero {
+                border-radius: 14px;
+                padding: 1.25rem;
+            }
+
+            .track-card-grid,
+            .stat-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 # ---------------------------------------------------------------------------
 # Course content
 # ---------------------------------------------------------------------------
@@ -1082,24 +1268,65 @@ def create_numpy_matrix(rows: int, columns: int, seed: int) -> np.ndarray:
 
 def render_header(track: str) -> None:
     """Render the app title and high-level learning promise."""
-    st.title("Python Data Pathways")
-    st.subheader(f"{track} track")
-    st.write(
-        "Choose a library track, learn the mental model, practice the syntax, avoid "
-        "common mistakes, and complete projects that look like real analysis work."
+    if track == "Pandas":
+        active_line = "Pandas track selected"
+        stats = [
+            ("Learning stages", len(MASTERY_MAP)),
+            ("Concepts", len(CONCEPT_LIBRARY)),
+            ("Cheat sheets", len(CHEAT_SHEETS)),
+            ("Projects", len(PROJECTS)),
+        ]
+    else:
+        active_line = "NumPy track selected"
+        stats = [
+            ("Learning stages", len(NUMPY_MASTERY_MAP)),
+            ("Concepts", len(NUMPY_CONCEPT_LIBRARY)),
+            ("Cheat sheets", len(NUMPY_CHEAT_SHEETS)),
+            ("Projects", len(NUMPY_PROJECTS)),
+        ]
+
+    st.markdown(
+        f"""
+        <section class="pathway-hero">
+            <div class="pathway-kicker">Interactive Python library lab</div>
+            <h1>Python Data Pathways</h1>
+            <p>
+                Choose Pandas for table analysis or NumPy for array thinking. Each track
+                gives students a roadmap, bite-sized lessons, active drills, quizzes,
+                playgrounds, and synthetic-data projects they can open in Colab.
+            </p>
+            <div class="track-pill">{active_line}</div>
+        </section>
+        """,
+        unsafe_allow_html=True,
     )
 
-    col1, col2, col3, col4 = st.columns(4)
-    if track == "Pandas":
-        col1.metric("Learning stages", len(MASTERY_MAP))
-        col2.metric("Concepts", len(CONCEPT_LIBRARY))
-        col3.metric("Cheat sheet topics", len(CHEAT_SHEETS))
-        col4.metric("Projects", len(PROJECTS))
-    else:
-        col1.metric("Learning stages", len(NUMPY_MASTERY_MAP))
-        col2.metric("Concepts", len(NUMPY_CONCEPT_LIBRARY))
-        col3.metric("Cheat sheet topics", len(NUMPY_CHEAT_SHEETS))
-        col4.metric("Projects", len(NUMPY_PROJECTS))
+    pandas_active = "active" if track == "Pandas" else ""
+    numpy_active = "active" if track == "NumPy" else ""
+    st.markdown(
+        f"""
+        <div class="track-card-grid">
+            <div class="track-card pandas {pandas_active}">
+                <h3>Pandas Track</h3>
+                <p>Practice DataFrames, cleaning, joins, time series, reusable pipelines,
+                and business-style analysis notebooks.</p>
+            </div>
+            <div class="track-card numpy {numpy_active}">
+                <h3>NumPy Track</h3>
+                <p>Practice arrays, shape, axis, broadcasting, simulations, masks,
+                and fast vectorized numeric workflows.</p>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    stat_tiles = "".join(
+        f'<div class="stat-tile"><div class="stat-value">{value}</div>'
+        f'<div class="stat-label">{label}</div></div>'
+        for label, value in stats
+    )
+    st.markdown(f'<div class="stat-grid">{stat_tiles}</div>', unsafe_allow_html=True)
 
 
 def render_mastery_map() -> None:
@@ -1740,6 +1967,8 @@ def render_numpy_study_plan() -> None:
 
 def main() -> None:
     """Main application entry point."""
+    apply_app_styles()
+
     st.sidebar.title("Learning Track")
     track = st.sidebar.radio(
         "What are you learning?",
@@ -1784,14 +2013,22 @@ def main() -> None:
             key="numpy-page",
         )
 
-    st.sidebar.markdown("---")
-    st.sidebar.write("Recommended order:")
-    st.sidebar.write("1. Mastery Map")
-    st.sidebar.write("2. Concept Library")
-    st.sidebar.write("3. Lessons")
-    st.sidebar.write("4. Playground")
-    st.sidebar.write("5. Drills and Quiz")
-    st.sidebar.write("6. Projects")
+    st.sidebar.markdown(
+        """
+        <div class="sidebar-guide">
+            <div class="sidebar-guide-title">Recommended order</div>
+            <ol>
+                <li>Mastery Map</li>
+                <li>Concept Library</li>
+                <li>Lessons</li>
+                <li>Playground</li>
+                <li>Drills and Quiz</li>
+                <li>Projects</li>
+            </ol>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
     if track == "Pandas":
         if page == "Mastery Map":
