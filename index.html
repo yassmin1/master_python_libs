@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pandas Pathway</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Interactive Python Data Analysis</p>
+        <h1>Pandas Pathway</h1>
+      </div>
+      <nav aria-label="Primary navigation">
+        <a href="#learn">Learn</a>
+        <a href="#practice">Practice</a>
+        <a href="#projects">Projects</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Beginner to Advanced</p>
+          <h2 id="hero-title">Learn Pandas by reading, editing, and reasoning with real data workflows.</h2>
+          <p>
+            Move from DataFrame basics to cleaning, reshaping, joins, time series,
+            performance, and project work. Every module includes examples, checks,
+            and practical tasks.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#learn">Start lessons</a>
+            <a class="button secondary" href="#playground">Open playground</a>
+          </div>
+        </div>
+        <div class="terminal" aria-label="Pandas code sample">
+          <div class="terminal-bar"><span></span><span></span><span></span></div>
+          <pre><code>import pandas as pd
+
+sales = pd.read_csv("sales.csv")
+summary = (
+    sales
+    .assign(revenue=lambda d: d.units * d.price)
+    .query("region != 'Test'")
+    .groupby("category", as_index=False)
+    .agg(revenue=("revenue", "sum"))
+    .sort_values("revenue", ascending=False)
+)
+
+print(summary.head())</code></pre>
+        </div>
+      </section>
+
+      <section class="stats" aria-label="Course summary">
+        <div><strong>24</strong><span>guided lessons</span></div>
+        <div><strong>40+</strong><span>examples</span></div>
+        <div><strong>12</strong><span>practice checks</span></div>
+        <div><strong>6</strong><span>portfolio projects</span></div>
+      </section>
+
+      <section id="learn" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Curriculum</p>
+          <h2>Choose a level</h2>
+        </div>
+        <div class="layout">
+          <aside class="lesson-list" aria-label="Lesson levels">
+            <button class="lesson-tab active" data-level="beginner">Beginner</button>
+            <button class="lesson-tab" data-level="intermediate">Intermediate</button>
+            <button class="lesson-tab" data-level="advanced">Advanced</button>
+          </aside>
+          <article class="lesson-panel" id="lesson-panel" aria-live="polite"></article>
+        </div>
+      </section>
+
+      <section id="practice" class="section split">
+        <div>
+          <p class="eyebrow">Practice</p>
+          <h2>Check your understanding</h2>
+          <p class="muted">
+            Answer focused questions that reinforce common Pandas decisions:
+            selecting rows, handling missing values, grouping data, and combining tables.
+          </p>
+        </div>
+        <div class="quiz">
+          <div class="quiz-top">
+            <span id="quiz-progress">Question 1 of 6</span>
+            <span id="quiz-score">Score 0</span>
+          </div>
+          <h3 id="quiz-question"></h3>
+          <div id="quiz-options" class="quiz-options"></div>
+          <p id="quiz-feedback" class="feedback" aria-live="polite"></p>
+          <button id="next-question" class="button primary" type="button">Next question</button>
+        </div>
+      </section>
+
+      <section id="playground" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Interactive Playground</p>
+          <h2>Explore a DataFrame</h2>
+          <p class="muted">
+            Use Pandas-style controls to filter, sort, group, and inspect a small sales dataset.
+          </p>
+        </div>
+        <div class="playground">
+          <div class="controls" aria-label="Data controls">
+            <label>
+              Region
+              <select id="region-filter">
+                <option value="all">All regions</option>
+              </select>
+            </label>
+            <label>
+              Minimum revenue
+              <input id="revenue-filter" type="range" min="0" max="1000" step="25" value="0" />
+              <span id="revenue-value">$0</span>
+            </label>
+            <label>
+              Sort by
+              <select id="sort-field">
+                <option value="revenue">Revenue</option>
+                <option value="units">Units</option>
+                <option value="price">Price</option>
+              </select>
+            </label>
+            <button id="group-category" class="button secondary" type="button">Group by category</button>
+            <button id="reset-data" class="icon-button" type="button" aria-label="Reset data">Reset</button>
+          </div>
+          <div class="data-output">
+            <div class="code-line" id="pandas-code"></div>
+            <div class="table-wrap">
+              <table>
+                <thead id="data-head"></thead>
+                <tbody id="data-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="projects" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Projects</p>
+          <h2>Build portfolio-ready skills</h2>
+        </div>
+        <div class="project-grid" id="project-grid"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Pandas Pathway is a local learning app for structured practice and project planning.</p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
